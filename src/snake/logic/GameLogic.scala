@@ -3,22 +3,131 @@ package snake.logic
 import engine.random.{RandomGenerator, ScalaRandomGen}
 import snake.logic.GameLogic._
 
+import scala.collection.mutable
+
 /** To implement Snake, complete the ``TODOs`` below.
  *
  * If you need additional files,
  * please also put them in the ``snake`` package.
  */
+
+
 class GameLogic(val random: RandomGenerator,
                 val gridDims : Dimensions) {
 
-  // TODO implement me
-  def getCellType(p: Point): CellType = Empty()
+  var body : List[Point] = List(Point(2,0), Point(1,0), Point(0,0))
+  var buffer : Int = 0
+
+  //var apple : Point
+  var currDirection: Direction = East()
+  var nextPoint : Point = (Point(3,0))
+
+  //def recalcApple(body : mutable.ArrayDeque[Point]): Unit = {
+  //  for (p <- gridDims.allPointsInside) {
+  //    for (x <- )
+  //  }
+  //}
+
+  def recalcBody( nextPoint : Point) {
+
+    body = nextPoint :: body
+    if (buffer <= 0) {
+      body = body.init
+    } else {
+      buffer -= 1
+    }
+  }
 
   // TODO implement me
-  def step(): Unit = ()
+  def getCellType(searchPoint: Point): CellType = {
+    for (p <- body) {
+      if (p == searchPoint) {
+        if (p != body.head) {
+          return SnakeBody()
+        } else return SnakeHead(currDirection)
+      }
+    }
+    //if (searchPoint == apple) {
+    //  return Apple()
+    //} else {
+      return Empty()
+    //}
+  }
 
   // TODO implement me
-  def changeDir(d: Direction): Unit = ()
+  def step() {
+    //getCellType(nextPoint) match {
+      //case Apple() => {
+      //    buffer = 3
+      //    recalcApple(body)
+      //}
+      //case SnakeBody("") => {
+        //gameOver = true
+     // }
+    //}
+
+    currDirection match {
+      case East() => {
+          nextPoint = Point(body(0).x + 1, body(0).y)
+      }
+      case West() => {
+          nextPoint = Point(body(0).x - 1, body(0).y)
+      }
+      case South() => {
+          nextPoint = Point(body(0).x , body(0).y + 1)
+      }
+      case North() => {
+          nextPoint = Point(body(0).x , body(0).y - 1)
+      }
+    }
+
+    if (nextPoint.x > gridDims.width - 1){
+      nextPoint = Point(0, nextPoint.y)
+    } else if (nextPoint.x < 0){
+      nextPoint = Point(gridDims.width, nextPoint.y)
+    } else if (nextPoint.y > gridDims.height - 1){
+      nextPoint = Point(nextPoint.x, 0)
+    } else if (nextPoint.y < 0){
+      nextPoint = Point(nextPoint.x, gridDims.height)
+    }
+    recalcBody(nextPoint)
+  }
+
+  // TODO implement me
+  def changeDir(d: Direction): Unit = {
+    currDirection = d
+
+    //currDirection match {
+    //  case East() => {
+    //    if (body(0).x + 1 > gridDims.width) {
+    //      nextPoint = Point(body(0).x - gridDims.width, body(0).y)
+    //    } else {
+    //      nextPoint = Point(body(0).x + 1, body(0).y)
+    //    }
+    //  }
+    //  case West() => {
+    //    if (body(0).x + 1 > gridDims.width) {
+    //      nextPoint = Point(body(0).x + gridDims.width, body(0).y)
+    //    } else {
+    //      nextPoint = Point(body(0).x - 1, body(0).y)
+    //    }
+    //  }
+    //  case South() => {
+    //    if (body(0).x + 1 > gridDims.width) {
+    //      nextPoint = Point(body(0).x , body(0).y - gridDims.height)
+    //    } else {
+    //      nextPoint = Point(body(0).x , body(0).y + 1)
+    //    }
+    //  }
+    //  case North() => {
+    //    if (body(0).x + 1 > gridDims.width) {
+    //      nextPoint = Point(body(0).x , body(0).y + gridDims.height)
+    //    } else {
+    //      nextPoint = Point(body(0).x , body(0).y - 1)
+    //    }
+    //  }
+    //}
+  }
 
   def gameOver: Boolean = false
   
